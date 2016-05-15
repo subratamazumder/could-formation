@@ -274,6 +274,7 @@
                 "\n",
 				"sudo yum install http://pkg.jenkins-ci.org/redhat/jenkins-2.3-1.1.noarch.rpm -y","\n",
 "sudo sed -i -e 's/JENKINS_JAVA_OPTIONS=\"/JENKINS_JAVA_OPTIONS=\"-Dhudson.diyChunking=false /g' /etc/sysconfig/jenkins","\n",
+"sudo aws s3 cp s3://poc-wars-bucket/no-security-jenkins-config/config.xml ./","\n",
 "sudo chkconfig jenkins on","\n",
 "sudo service jenkins start","\n",
 "cd /var/lib/jenkins","\n",
@@ -297,6 +298,7 @@
 "sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/scm-api.hpi -deploy","\n",
 "sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/git.hpi -deploy","\n",
 "sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/github.hpi -deploy","\n",
+"sudo aws s3 cp s3://poc-wars-bucket/security-jenkins-config/config.xml ./","\n",
 "sudo service jenkins restart","\n",
 "echo 'Jenkin Admin password is'","\n",
 "sudo cat jenkins/secrets/initialAdminPassword","\n"
