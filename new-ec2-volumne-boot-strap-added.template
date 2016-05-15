@@ -1,0 +1,462 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "AWS CloudFormation Sample Template : Create an Amazon EC2 instance running the Amazon Linux AMI. The AMI is chosen based on the region in which the stack is run.This also creats IAM role and attacch with S3Full and EC2Full access",
+  "Metadata": {
+    "AWS::CloudFormation::Designer": {
+      "c216727f-4991-49f6-895b-2c653bbacc54": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 20,
+          "y": 80
+        },
+        "z": 1,
+        "embeds": [],
+        "ismemberof": [
+          "9a004f45-a570-4589-ab6a-bc73d70705ad"
+        ],
+        "isrelatedto": [
+          "78f9157d-b0ad-4e2c-a9f1-dcd9107550c9"
+        ]
+      },
+      "9a004f45-a570-4589-ab6a-bc73d70705ad": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -170,
+          "y": 80
+        },
+        "z": 1,
+        "embeds": []
+      },
+      "3e5d50fc-2cea-49e6-95fe-e97fac567b08": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 310,
+          "y": 80
+        },
+        "z": 0,
+        "embeds": []
+      },
+      "ec5e4067-c2c2-433a-bc84-a7d00388e38b": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 310,
+          "y": 210
+        },
+        "z": 0,
+        "embeds": [],
+        "isassociatedwith": [
+          "3e5d50fc-2cea-49e6-95fe-e97fac567b08"
+        ]
+      },
+      "d5a53d28-211f-4799-9481-9f6d3336a164": {
+        "source": {
+          "id": "ec5e4067-c2c2-433a-bc84-a7d00388e38b"
+        },
+        "target": {
+          "id": "3e5d50fc-2cea-49e6-95fe-e97fac567b08"
+        },
+        "z": 2
+      },
+      "78f9157d-b0ad-4e2c-a9f1-dcd9107550c9": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 160,
+          "y": 80
+        },
+        "z": 0,
+        "embeds": [],
+        "isassociatedwith": [
+          "3e5d50fc-2cea-49e6-95fe-e97fac567b08"
+        ]
+      },
+      "d71c8e43-bfe0-4d08-ac56-c70a35c97fd6": {
+        "source": {
+          "id": "78f9157d-b0ad-4e2c-a9f1-dcd9107550c9"
+        },
+        "target": {
+          "id": "3e5d50fc-2cea-49e6-95fe-e97fac567b08"
+        },
+        "z": 11
+      },
+      "dbfb8e72-72e4-4373-8ff2-900b99332e9a": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 20,
+          "y": -30
+        },
+        "z": 0,
+        "embeds": [],
+        "isrelatedto": [
+          "c216727f-4991-49f6-895b-2c653bbacc54"
+        ]
+      },
+      "0d639da1-99f5-45ee-ace3-bd555ef81dd9": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": 310,
+          "y": -30
+        },
+        "z": 0,
+        "embeds": [],
+        "isassociatedwith": [
+          "3e5d50fc-2cea-49e6-95fe-e97fac567b08"
+        ]
+      }
+    }
+  },
+  "Resources": {
+    "SshHttpTcpSG": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "This group is to allow ssh, http and tcp-8080",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "TCP",
+            "ToPort": "22",
+            "FromPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "TCP",
+            "ToPort": "80",
+            "FromPort": "80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "TCP",
+            "ToPort": "8080",
+            "FromPort": "8080",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "9a004f45-a570-4589-ab6a-bc73d70705ad"
+        }
+      }
+    },
+    "S3FullAccess": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "S3FullAccessPolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:*",
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "EC2FullAccessRole"
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "ec5e4067-c2c2-433a-bc84-a7d00388e38b"
+        }
+      }
+    },
+    "EC2FullAccessRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "3e5d50fc-2cea-49e6-95fe-e97fac567b08"
+        }
+      }
+    },
+    "EC2InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "EC2FullAccessRole"
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "78f9157d-b0ad-4e2c-a9f1-dcd9107550c9"
+        }
+      }
+    },
+    "EC2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "SshHttpTcpSG"
+          }
+        ],
+        "KeyName": {
+          "Ref": "KeyName"
+        },
+        "ImageId": {
+          "Fn::FindInMap": [
+            "AWSRegionArch2AMI",
+            {
+              "Ref": "AWS::Region"
+            },
+            {
+              "Fn::FindInMap": [
+                "AWSInstanceType2Arch",
+                {
+                  "Ref": "InstanceType"
+                },
+                "Arch"
+              ]
+            }
+          ]
+        },
+        "IamInstanceProfile": {
+          "Ref": "EC2InstanceProfile"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "InstanceTag"
+            }
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -ex",
+                "\n",
+                "sudo yum install git-all -y",
+                "\n",
+				"sudo yum install http://pkg.jenkins-ci.org/redhat/jenkins-2.3-1.1.noarch.rpm -y","\n",
+"sudo sed -i -e 's/JENKINS_JAVA_OPTIONS=\"/JENKINS_JAVA_OPTIONS=\"-Dhudson.diyChunking=false /g' /etc/sysconfig/jenkins","\n",
+"sudo chkconfig jenkins on","\n",
+"sudo service jenkins start","\n",
+"cd /var/lib/jenkins","\n",
+"sleep 60","\n",
+"sudo curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/ant.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/gradle.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/javadoc.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/junit.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/mailer.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/maven-plugin.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/icon-shim.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/credentials.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/github-api.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/plain-credentials.hpi -deploy","\n", 
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/token-macro.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/ssh-credentials.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/script-security.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/matrix-project.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/git-client.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/scm-api.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/git.hpi -deploy","\n",
+"sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/github.hpi -deploy","\n",
+"sudo service jenkins restart","\n",
+"echo 'Jenkin Admin password is'","\n",
+"sudo cat jenkins/secrets/initialAdminPassword","\n"
+              ]
+            ]
+          }
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "c216727f-4991-49f6-895b-2c653bbacc54"
+        }
+      }
+    },
+    "EC2Volume8G": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "Size": "8",
+        "VolumeType": "gp2",
+        "AvailabilityZone": {
+          "Fn::GetAtt": [
+            "EC2Instance",
+            "AvailabilityZone"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Ref": "InstanceTag"
+            }
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "dbfb8e72-72e4-4373-8ff2-900b99332e9a"
+        }
+      }
+    },
+    "EC2FullAccess": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "EC2FullAccessPolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": "ec2:*",
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "elasticloadbalancing:*",
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "cloudwatch:*",
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "autoscaling:*",
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "EC2FullAccessRole"
+          }
+        ]
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "0d639da1-99f5-45ee-ace3-bd555ef81dd9"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "KeyName": {
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+    },
+    "InstanceType": {
+      "Description": "WebServer EC2 instance type",
+      "Type": "String",
+      "Default": "t2.micro",
+      "AllowedValues": [
+        "t2.micro"
+      ],
+      "ConstraintDescription": "must be a valid EC2 instance type."
+    },
+    "InstanceTag": {
+      "Description": "WebServer EC2 instance tag",
+      "Type": "String",
+      "Default": "new-ec2-instance"
+    }
+  },
+  "Mappings": {
+    "AWSRegionArch2AMI": {
+      "eu-west-1": {
+        "HVM64": "ami-b0ac25c3"
+      },
+      "eu-central-1": {
+        "HVM64": "ami-d3c022bc"
+      }
+    },
+    "AWSInstanceType2Arch": {
+      "t2.micro": {
+        "Arch": "HVM64"
+      },
+      "t2.small": {
+        "Arch": "HVM64"
+      },
+      "t2.medium": {
+        "Arch": "HVM64"
+      },
+      "t2.large": {
+        "Arch": "HVM64"
+      }
+    }
+  },
+  "Outputs": {
+    "InstanceId": {
+      "Description": "InstanceId of the newly created EC2 instance",
+      "Value": {
+        "Ref": "EC2Instance"
+      }
+    },
+    "AZ": {
+      "Description": "Availability Zone of the newly created EC2 instance",
+      "Value": {
+        "Fn::GetAtt": [
+          "EC2Instance",
+          "AvailabilityZone"
+        ]
+      }
+    },
+    "PublicDNS": {
+      "Description": "Public DNSName of the newly created EC2 instance",
+      "Value": {
+        "Fn::GetAtt": [
+          "EC2Instance",
+          "PublicDnsName"
+        ]
+      }
+    },
+    "PublicIP": {
+      "Description": "Public IP address of the newly created EC2 instance",
+      "Value": {
+        "Fn::GetAtt": [
+          "EC2Instance",
+          "PublicIp"
+        ]
+      }
+    }
+  }
+}
