@@ -1,0 +1,34 @@
+
+http://ec2-54-194-231-87.eu-west-1.compute.amazonaws.com:8080/login?from=%2F
+
+
+sudo yum install http://pkg.jenkins-ci.org/redhat/jenkins-2.3-1.1.noarch.rpm -y
+sudo sed -i -e 's/JENKINS_JAVA_OPTIONS="/JENKINS_JAVA_OPTIONS="-Dhudson.diyChunking=false /g' /etc/sysconfig/jenkins
+sudo chkconfig jenkins on
+sudo service jenkins start
+sleep 60
+cd /var/lib/jenkins
+sudo sed -i -e 's/<denyAnonymousReadAccess>true</<denyAnonymousReadAccess>false</g' config.xml
+sudo service jenkins restart
+sleep 60
+sudo curl -O http://localhost:8080/jnlpJars/jenkins-cli.jar
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ login --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/ant.hpi -deploy --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/gradle.hpi -deploy  --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword 
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/javadoc.hpi -deploy --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/junit.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword 
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/mailer.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/maven-plugin.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/icon-shim.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/credentials.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/github-api.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword 
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/plain-credentials.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword 
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/token-macro.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/ssh-credentials.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/script-security.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/matrix-project.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/git-client.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/scm-api.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/git.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword 
+sudo java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin http://updates.jenkins-ci.org/latest/github.hpi -deploye --username admin --password-file /var/lib/jenkins/secrets/initialAdminPassword
+sudo service jenkins restart
